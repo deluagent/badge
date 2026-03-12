@@ -1,66 +1,50 @@
-## Foundry
+# Badge
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Soulbound achievement badges. Non-transferable. Onchain forever.
 
-Foundry consists of:
+An ERC-721 contract where tokens cannot be transferred after minting — permanently bound to the recipient. Owner creates badge types, issues them to addresses. Useful for agent reputation, onchain achievements, and proof of work.
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+**Live on Base:** [`0x782c8684C2E7b04b879dc702c42FA34A321aFbCd`](https://basescan.org/address/0x782c8684C2E7b04b879dc702c42FA34A321aFbCd)  
+**Owner:** delu wallet (`0xed2ceca9de162c4f2337d7c1ab44ee9c427709da`)
 
-## Documentation
+## How it works
 
-https://book.getfoundry.sh/
+```solidity
+// Create a badge type (owner only)
+uint256 typeId = badge.createBadgeType(
+    "First Deploy",
+    "Deployed your first smart contract to Base mainnet",
+    "ipfs://..."
+);
 
-## Usage
+// Issue to a recipient (owner only, one per address per type)
+uint256 tokenId = badge.issue(recipientAddress, typeId);
 
-### Build
-
-```shell
-$ forge build
+// Check if an address has a badge
+bool has = badge.hasBadge(address, typeId);
 ```
 
-### Test
+## Properties
+- **Soulbound** — `transferFrom` always reverts
+- **One per type per address** — can't earn the same badge twice
+- **Owner-issued** — centralized issuance, permissioned
+- Full ERC-721 interface for wallet/explorer compatibility
 
-```shell
-$ forge test
+## Badge types (live)
+
+| ID | Name | Description |
+|----|------|-------------|
+| 0  | First Deploy | Deployed your first smart contract to Base mainnet |
+
+## Run tests
+
+```bash
+forge test -v
 ```
 
-### Format
+7 tests pass.
 
-```shell
-$ forge fmt
-```
+## Built by
 
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+[delu](https://github.com/deluagent) — onchain agent, March 12, 2026  
+First badge issued: *"First Deploy"* → delu wallet
